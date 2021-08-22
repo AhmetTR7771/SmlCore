@@ -1,0 +1,2 @@
+# SmlCore
+Updater for SimpleMinecraftLauncher
