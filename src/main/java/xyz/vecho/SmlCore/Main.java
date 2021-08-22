@@ -53,45 +53,45 @@ public class Main {
 					file.delete();
 					copy(connect("https://vecho.cf/api/sml/originalJar.jar"), new FileOutputStream(file));
 				}
-				
+
 				copy(connect("https://vecho.cf/api/sml/sml.patch"), new FileOutputStream(patchFile));
-				
+
 				byte[] originalBytes = Files.readAllBytes(file.toPath());
 				byte[] patch = readFully(new FileInputStream(patchFile));
-	            final OutputStream jarOutput = new BufferedOutputStream(new FileOutputStream(file));
+				final OutputStream jarOutput = new BufferedOutputStream(new FileOutputStream(file));
 				
-	            Patch.patch(originalBytes, patch, jarOutput);
+				Patch.patch(originalBytes, patch, jarOutput);
+
+				if (!sha1(file).equalsIgnoreCase(object.get("patchedJar").getAsString())) {
+					System.out.println("Cannot patch simpleminecraftlauncher");
+					System.exit(1);
+			        } else System.out.println("Update successful");
 	            
-	            if (!sha1(file).equalsIgnoreCase(object.get("patchedJar").getAsString())) {
-	            	System.out.println("Cannot patch simpleminecraftlauncher");
-	            	System.exit(1);
-	            } else System.out.println("Update successful");
-	            
-	            patchFile.delete();
+	            		patchFile.delete();
 			}
             
-            List<String> cmds = new ArrayList<String>();
+			List<String> cmds = new ArrayList<String>();
             
-            cmds.add("javaw");
+            		cmds.add("javaw");
             
-            cmds.add("-jar");
+            		cmds.add("-jar");
             
-            cmds.add("\""+file.getAbsolutePath()+"\"");
+            		cmds.add("\""+file.getAbsolutePath()+"\"");
             
-            boolean flag = optionset.has("downloadjre") || optionset.has("usejre");
-            if (flag) cmds.add("-usejre");
+            		boolean flag = optionset.has("downloadjre") || optionset.has("usejre");
+            		if (flag) cmds.add("-usejre");
             
-            cmds.add("-username");
+            		cmds.add("-username");
             
-            cmds.add(optionset.valueOf(userNameSpec));
+            		cmds.add(optionset.valueOf(userNameSpec));
             
-            cmds.add("-version");
+            		cmds.add("-version");
             
-            cmds.add(optionset.valueOf(versionSpec));
+            		cmds.add(optionset.valueOf(versionSpec));
             
-            cmds.add("-skipupdate");
+            		cmds.add("-skipupdate");
             
-            Process p = Runtime.getRuntime().exec(cmds.toArray(new String[0]));
+            		Process p = Runtime.getRuntime().exec(cmds.toArray(new String[0]));
             
 			while (p.isAlive()) {
 				copy(p.getInputStream(), System.out);
@@ -103,14 +103,14 @@ public class Main {
 		}
 	}
 
-    public static void copy(InputStream in, OutputStream out) throws IOException {
+    	public static void copy(InputStream in, OutputStream out) throws IOException {
 		int n;
 		byte[] buffer = new byte[8192]; 
 		while ((n = in.read(buffer)) != -1) {
 			out.write(buffer, 0, n);
 		}
 		out.close();
-    }
+	}
 	
 	public static InputStream connect(String url) throws IOException {
 		final HttpURLConnection conn = (HttpURLConnection)new URL(url).openConnection();
@@ -127,20 +127,20 @@ public class Main {
 		return DatatypeConverter.printHexBinary(hash);
 	}
 	
-    private static byte[] readFully(final InputStream in) throws IOException {
-        try {
-            byte[] buffer = new byte[16 * 1024];
-            int off = 0;
-            int read;
-            while ((read = in.read(buffer, off, buffer.length - off)) != -1) {
-                off += read;
-                if (off == buffer.length) {
-                    buffer = Arrays.copyOf(buffer, buffer.length * 2);
-                }
-            }
-            return Arrays.copyOfRange(buffer, 0, off);
-        } finally {
-            in.close();
-        }
-    }
+	private static byte[] readFully(final InputStream in) throws IOException {
+        	try {
+		    byte[] buffer = new byte[16 * 1024];
+		    int off = 0;
+		    int read;
+		    while ((read = in.read(buffer, off, buffer.length - off)) != -1) {
+			off += read;
+			if (off == buffer.length) {
+			    buffer = Arrays.copyOf(buffer, buffer.length * 2);
+			}
+		    }
+		    return Arrays.copyOfRange(buffer, 0, off);
+		} finally {
+		    in.close();
+		}
+    	}
 }
